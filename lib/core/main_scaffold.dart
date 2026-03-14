@@ -1,34 +1,57 @@
+import 'package:chat/const/app_colors.dart';
+import 'package:chat/core/svg_icon.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
-class MainScaffold extends StatefulWidget {
-  final child;
-  const MainScaffold({super.key, required this.child});
+class MainScaffold extends StatelessWidget {
+  final StatefulNavigationShell navigationShell;
 
-  @override
-  State<MainScaffold> createState() => _MainScaffoldState();
-}
-
-class _MainScaffoldState extends State<MainScaffold> {
-  int _currentIndex = 0;
-
-  // final List<String> _pages = const [];
+  const MainScaffold({super.key, required this.navigationShell});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: widget.child,
+      body: navigationShell,
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
+        backgroundColor: AppColors.white,
+        selectedFontSize: 0,
+        unselectedFontSize: 0,
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
+        currentIndex: navigationShell.currentIndex,
         onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
+          navigationShell.goBranch(index);
         },
         type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.chat)),
-          BottomNavigationBarItem(icon: Icon(Icons.person)),
-          BottomNavigationBarItem(icon: Icon(Icons.search)),
+        landscapeLayout: BottomNavigationBarLandscapeLayout.spread,
+        items: [
+          BottomNavigationBarItem(
+            icon: SvgIcon(
+              iconName: 'assets/icons/chat.svg',
+              iconColor: navigationShell.currentIndex == 0
+                  ? AppColors.black
+                  : AppColors.navBarItemColor,
+            ),
+            label: 'chat',
+          ),
+          BottomNavigationBarItem(
+            icon: SvgIcon(
+              iconName: 'assets/icons/contacts.svg',
+              iconColor: navigationShell.currentIndex == 1
+                  ? AppColors.black
+                  : AppColors.navBarItemColor,
+            ),
+            label: 'contact',
+          ),
+          BottomNavigationBarItem(
+            icon: SvgIcon(
+              iconName: 'assets/icons/discover.svg',
+              iconColor: navigationShell.currentIndex == 2
+                  ? AppColors.black
+                  : AppColors.navBarItemColor,
+            ),
+            label: 'discover',
+          ),
         ],
       ),
     );
