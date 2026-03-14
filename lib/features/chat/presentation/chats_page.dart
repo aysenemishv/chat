@@ -1,19 +1,22 @@
 import 'package:chat/const/app_colors.dart';
 import 'package:chat/const/app_text_styles.dart';
 import 'package:chat/core/svg_icon.dart';
-import 'package:chat/data/fake_data.dart';
+import 'package:chat/features/chat/presentation/chat_list.dart';
 import 'package:chat/features/chat/widgets/custom_text_field.dart';
-import 'package:chat/features/contacts/widgets/contact_item.dart';
+import 'package:chat/features/chat/widgets/story_item.dart';
+import 'package:chat/features/profile/presentation/profile_page.dart';
 import 'package:flutter/material.dart';
+import 'package:chat/data/fake_data.dart';
+import 'package:go_router/go_router.dart';
 
-class ContactPage extends StatefulWidget {
-  const ContactPage({super.key});
+class ChatsPage extends StatefulWidget {
+  const ChatsPage({super.key});
 
   @override
-  State<ContactPage> createState() => _ContactPageState();
+  State<ChatsPage> createState() => _ChatsPageState();
 }
 
-class _ContactPageState extends State<ContactPage> {
+class _ChatsPageState extends State<ChatsPage> {
   TextEditingController textEditingController = TextEditingController();
 
   @override
@@ -25,12 +28,27 @@ class _ContactPageState extends State<ContactPage> {
         elevation: 0,
         surfaceTintColor: Colors.white,
         shadowColor: AppColors.blackWithOpacity5,
-        title: Text("People", style: AppTextStyles.s30w700clBlack),
+        title: Row(
+          children: [
+            GestureDetector(
+              onTap: () {
+                context.push(ProfilePage.route);
+              },
+              child: Image.asset(
+                'assets/images/user1.png',
+                height: 40,
+                width: 40,
+              ),
+            ),
+            SizedBox(width: 10),
+            Text("Chats", style: AppTextStyles.s30w700clBlack),
+          ],
+        ),
         actions: [
           IconButton(
             onPressed: () {},
             icon: SvgIcon(
-              iconName: 'assets/icons/chat.svg',
+              iconName: 'assets/icons/camera.svg',
               height: 20,
               width: 20,
             ),
@@ -41,7 +59,7 @@ class _ContactPageState extends State<ContactPage> {
           IconButton(
             onPressed: () {},
             icon: SvgIcon(
-              iconName: 'assets/icons/person_plus.svg',
+              iconName: 'assets/icons/note.svg',
               height: 20,
               width: 20,
             ),
@@ -51,11 +69,12 @@ class _ContactPageState extends State<ContactPage> {
           ),
         ],
         backgroundColor: Colors.white,
+        // elevation: 8,
       ),
       body: SafeArea(
         child: ListView(
           children: [
-            SizedBox(height: 16),
+            SizedBox(height: 10),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: CustomTextField(
@@ -74,8 +93,9 @@ class _ContactPageState extends State<ContactPage> {
               ),
             ),
             SizedBox(height: 16),
-
-            _ContactsList(),
+            _StoriesSection(),
+            SizedBox(height: 16),
+            ChatList(),
           ],
         ),
       ),
@@ -83,16 +103,23 @@ class _ContactPageState extends State<ContactPage> {
   }
 }
 
-class _ContactsList extends StatelessWidget {
-  const _ContactsList();
+class _StoriesSection extends StatelessWidget {
+  const _StoriesSection();
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      itemBuilder: (context, index) => ContactItem(chatUser: chatUsers[index]),
-      itemCount: chatUsers.length,
+    return SizedBox(
+      height: 80,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        itemCount: chatUsers.length,
+        separatorBuilder: (context, index) => SizedBox(width: 20),
+        itemBuilder: (context, index) => StoryItem(
+          name: chatUsers[index].name,
+          imagePath: chatUsers[index].imagePath,
+        ),
+      ),
     );
   }
 }
